@@ -1,3 +1,6 @@
 [submodule "dockerimages"]
 	path = dockerimages
 	url = git@github.com:oip-core/oip-core-docker-images.git
+[submodule "templates"]
+	path = templates
+	url = git@github.com:oip-core/oip-core-ocp-templates.git
