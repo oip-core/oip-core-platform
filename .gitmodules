@@ -1,0 +1,3 @@
+[submodule "dockerimages"]
+	path = dockerimages
+	url = git@github.com:oip-core/oip-core-docker-images.git
