@@ -66,6 +66,8 @@ case $1 in
 	  shift
 	  ;;
   sync_all)
+	  _log "Pulling base project's from upstream"
+	  _exec_log git pull
 	  update_submodules
 	  push_upstream
 	  shift
