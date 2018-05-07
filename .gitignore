@@ -1,3 +1,9 @@
+# Based on python .gitignore template
+
+## Custom rules
+# exclude generated files
+generated/
+
 # Byte-compiled / optimized / DLL files
 __pycache__/
 *.py[cod]
