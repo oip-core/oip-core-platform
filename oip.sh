@@ -35,6 +35,9 @@ usage() {
 
   where option is:
     update_submodules:   recursively update submodules
+    sync_push:           recursively sync modules and push upstream
+    sync_templates:      generate templates and push them to OCP
+    deploy_guides:       deploy various app guides on OCP
 
 	EOT
   exit 1
@@ -117,6 +120,34 @@ deploy_guides() {
 
 
 
+# generate templates and upload them to OCP
+sync_templates() {
+  _log BEGIN: sync templates
+
+  #TODO: handle docker image missing
+
+  # Generate templates definitions form source
+  _exec_log docker run --rm -v $(pwd):/data itisopen/oip-init:nightly generate
+
+  # upload them to OCP, replacing existing ones, if any
+  for tmpl in $(ls -d generated/templates/* | grep -v vars); do
+    [ -d "$tmpl" -a -f "$tmpl/template.yaml" ] || continue
+    tmpl_name=$(basename -- $tmpl)
+    #TODO: avoid polling 
+    if oc -n openshift get template $tmpl_name >/dev/null 2>&1; then
+      _log "deleting existing template '$tmpl_name'"
+      oc -n openshift delete template $tmpl_name
+    else
+      _log "template '$tmpl_name' not found"
+    fi
+    _exec_log oc -n openshift create -f $tmpl/template.yaml
+  done
+
+  _log END: sync templates
+}
+
+
+
 ## Main logic
 [ $# -lt 1 ] && usage
 case $1 in
@@ -124,11 +155,15 @@ case $1 in
 	  update_submodules
 	  shift
 	  ;;
-  sync_all)
+  sync_repos)
 	  _log "Pulling base project's from upstream"
 	  _exec_log git pull
 	  update_submodules
 	  push_upstream
+	  shift
+	  ;;
+  sync_templates)
+	  sync_templates
 	  shift
 	  ;;
   deploy_guides)
