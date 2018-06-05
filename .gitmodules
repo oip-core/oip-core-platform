@@ -4,3 +4,6 @@
 [submodule "templates"]
 	path = templates
 	url = git@github.com:oip-core/oip-core-ocp-templates.git
+[submodule "images"]
+	path = images
+	url = git@github.com:oip-core/oip-core-ocp-images.git
