@@ -18,7 +18,7 @@ PROJECT=${1:-glusterfs}
 # Checking GlusterFS status
 _log "##############################################################################"
 _log "# Checking GlusterFS status by inspecting pods in project '$PROJECT'"
-for pod in $(oc get pods -o=custom-columns=NAME:.metadata.name --no-headers | grep glusterfs); do
+for pod in $(oc -n $PROJECT get pods -o=custom-columns=NAME:.metadata.name --no-headers | grep glusterfs); do
     _log "-> checking 'glusterd' status..."
     _exec_log oc -n $PROJECT exec $pod -- systemctl status glusterd;
     _log "------------------------------------------------------------------------------"
@@ -34,11 +34,9 @@ _log "##########################################################################
 
 
 # Checking Heketi
-_log 
-_log
-_log "##############################################################################"
+_log "\n\n##############################################################################"
 _log "Checking Heketi status using heketi pod(s) in project '$PROJECT'"
-for pod in $(oc get pods -o=custom-columns=NAME:.metadata.name --no-headers | grep heketi | grep -v deploy); do
+for pod in $(oc -n $PROJECT get pods -o=custom-columns=NAME:.metadata.name --no-headers | grep heketi | grep -v deploy); do
     _log "-> checking heketi volume list..."
     _exec_log oc -n $PROJECT exec $pod -- sh -c 'heketi-cli --user admin --secret "$HEKETI_ADMIN_KEY" volume list'
     _log "------------------------------------------------------------------------------"
