@@ -7,7 +7,7 @@ VERBOSE=${VERBOSE:-true}
 
 # Logging function
 _log() {
-  [ "x$VERBOSE" != "x" ] && echo "$@"
+  [ "x$VERBOSE" != "x" ] && echo -e "$@"
 }
 
 # Error function
